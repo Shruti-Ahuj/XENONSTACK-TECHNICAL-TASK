@@ -1,0 +1,43 @@
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class MobileSellingApp {
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/mobile_selling";
+    private static final String DB_USER = "your_db_user";
+    private static final String DB_PASSWORD = "your_db_password";
+
+    public static void main(String[] args) {
+        try {
+            Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+            
+            boolean loggedIn = login(connection, "username", "password");
+            if (loggedIn) {
+                System.out.println("Login successful");
+                
+            } else {
+                System.out.println("Login failed");
+            }
+
+            logout(connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean login(Connection connection, String username, String password) throws SQLException {
+        String sql = "SELECT id FROM users WHERE username = ? AND password = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, username);
+            statement.setString(2, password);
+            ResultSet result = statement.executeQuery();
+            return result.next();
+        }
+    }
+
+    public static void logout(Connection connection) {
+        
+    }
+}
